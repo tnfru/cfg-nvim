@@ -6,7 +6,7 @@ local nvlsp = require "nvchad.configs.lspconfig"
 local python_utils = require "configs.python_utils"
 
 -- Configure servers that don't need special configuration
-local basic_servers = { "html", "cssls", "bashls", "ruff", "pyright" }
+local basic_servers = { "html", "cssls", "bashls", }
 for _, lsp in ipairs(basic_servers) do
   lspconfig[lsp].setup {
     on_attach = nvlsp.on_attach,
