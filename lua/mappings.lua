@@ -23,3 +23,18 @@ map("n", "<Up>", ":resize -2<CR>")
 map("n", "<Down>", ":resize +2<CR>")
 map("n", "<Left>", ":vertical resize -2<CR>")
 map("n", "<Right>", ":vertical resize +2<CR>")
+map("n", "<leader>se", "<C-w>=")
+
+-- tabs
+map("n", "<leader>to", ":tabnew<CR>")
+map("n", "<leader>tx", ":tabclose<CR>")
+map("n", "<leader>tn", ":tabn<CR>")
+map("n", "<leader>tp", ":tabp<CR>")
+
+-- stay in v mode after indenting
+map("v", "<", "<gv")
+map("v", ">", ">gv")
+
+-- diagnostic
+map("n", "<leader>d", vim.diagnostic.setloclist)
+map("n", "<leader>q", vim.diagnostic.open_float)
