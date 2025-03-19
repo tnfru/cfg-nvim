@@ -24,6 +24,7 @@ map("n", "<Down>", ":resize +2<CR>")
 map("n", "<Left>", ":vertical resize -2<CR>")
 map("n", "<Right>", ":vertical resize +2<CR>")
 map("n", "<leader>se", "<C-w>=")
+map("n", "<leader>v", "<C-w>v", {noremap=true})
 
 -- tabs
 map("n", "<leader>to", ":tabnew<CR>")
