@@ -46,7 +46,7 @@ lspconfig.ruff.setup {
   on_attach = function(client, bufnr)
     -- Call the default on_attach first
     nvlsp.on_attach(client, bufnr)
-    
+
     -- Disable hover in favor of Pyright
     client.server_capabilities.hoverProvider = false
   end,
