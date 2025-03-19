@@ -58,7 +58,7 @@ lspconfig.ruff.setup {
     },
     ruff = {
       lint = {
-        run = "onSave",
+        run = "onType",
       },
     },
   },
