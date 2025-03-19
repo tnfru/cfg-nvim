@@ -15,6 +15,8 @@ map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 map({ "n", "i", "v" }, "<C-q>", "<cmd> q <cr>")
 
 -- scroll
+map("n", "L", "L5<C-e>", { noremap = true, desc = "Move to bottom line and scroll" })
+map("n", "H", "H5<C-y>", { noremap = true, desc = "Move to top line and scroll" })
 map("n", "<C-d>", "<C-d>zz")
 map("n", "<C-u>", "<C-u>zz")
 
