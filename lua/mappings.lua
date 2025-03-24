@@ -6,9 +6,9 @@ local map = vim.keymap.set
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
 
-map("i", "jk", "<ESC>", { desc = "Exit insert mode by pressing jk quickly"})
+map("i", "jk", "<ESC>", { desc = "Exit insert mode by pressing jk quickly" })
 
-map("n", "x", '"_x', { desc = "Dont copy char deleted by x"})
+map("n", "x", '"_x', { desc = "Dont copy char deleted by x" })
 --
 -- save and quit using ctrl
 map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
@@ -26,7 +26,7 @@ map("n", "<Down>", ":resize +2<CR>")
 map("n", "<Left>", ":vertical resize -2<CR>")
 map("n", "<Right>", ":vertical resize +2<CR>")
 map("n", "<leader>se", "<C-w>=")
-map("n", "<leader>v", "<C-w>v", {noremap=true})
+map("n", "<leader>v", "<C-w>v", { noremap = true })
 
 -- tabs
 map("n", "<leader>to", ":tabnew<CR>")
@@ -41,3 +41,13 @@ map("v", ">", ">gv")
 -- diagnostic
 map("n", "<leader>d", vim.diagnostic.setloclist)
 map("n", "<leader>q", vim.diagnostic.open_float)
+
+-- Simple save without format
+map("n", "<leader>sw", "<cmd>noautocmd w<cr>", { desc = "Save without formatting" })
+
+-- Register with which-key
+local wk = require "which-key"
+wk.add {
+  { "<leader>s",  group = "Save" },
+  { "<leader>sw", "<cmd>noautocmd w<cr>", desc = "Save without formatting" },
+}
