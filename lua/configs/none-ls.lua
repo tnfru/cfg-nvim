@@ -1,26 +1,59 @@
 local null_ls = require("null-ls")
-local python_utils = require "configs.python_utils"
+local python_utils = require("configs.python_utils")
 
 -- Try to find Python in virtual environment
 local python_path = python_utils.find_venv_python()
 
-local opts = {
-  debug = false,
-  sources = {
-    -- Your null-ls sources will go here
-    -- We're not adding any Python linters here since you're using Ruff through LSP
-    -- Examples of other potential sources
-    -- null_ls.builtins.formatting.prettier,
-    -- null_ls.builtins.diagnostics.eslint,
-    -- null_ls.builtins.completion.spell,
+-- Set up mason integration for none-ls
+require('mason-null-ls').setup {
+  ensure_installed = {
+    'checkmake',
+    'prettier',
+    'stylua',
+    'eslint_d',
+    'shfmt',
+    'ruff',
   },
-  -- Use this to set up on_attach with the proper capabilities and other options
-  on_attach = function(client, bufnr)
-    -- You can copy over the on_attach function from your lspconfig.lua
-    local lspconfig = require("nvchad.configs.lspconfig")
-    lspconfig.on_attach(client, bufnr)
-  end,
+  automatic_installation = true,
 }
 
--- Initialize and return the config
-null_ls.setup(opts)
+-- Define sources for null-ls
+local formatting = null_ls.builtins.formatting
+local diagnostics = null_ls.builtins.diagnostics
+
+local sources = {
+  -- From your provided config
+  diagnostics.checkmake,
+  formatting.prettier.with { filetypes = { 'html', 'json', 'yaml', 'markdown' } },
+  formatting.stylua,
+  formatting.shfmt.with { args = { '-i', '4' } },
+  formatting.terraform_fmt,
+  require('none-ls.formatting.ruff').with { extra_args = { '--extend-select', 'I' } },
+  require('none-ls.formatting.ruff_format'),
+}
+
+-- Set up format on save
+local augroup = vim.api.nvim_create_augroup('LspFormatting', {})
+
+-- Initialize null-ls
+null_ls.setup {
+  -- debug = true, -- Enable for troubleshooting
+  sources = sources,
+  on_attach = function(client, bufnr)
+    -- Use nvchad's on_attach for consistent behavior
+    local lspconfig = require("nvchad.configs.lspconfig")
+    lspconfig.on_attach(client, bufnr)
+    
+    -- Set up format on save
+    if client.supports_method('textDocument/formatting') then
+      vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        group = augroup,
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format({ async = false })
+        end,
+      })
+    end
+  end,
+}
