@@ -44,30 +44,180 @@ require("fidget").setup {
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
+-- Configure WhichKey
+local wk = require "which-key"
+wk.setup {
+  triggers_nowait = {
+    -- your triggers here
+  },
+}
+
+-- Register groups
+wk.add {
+  -- LSP group
+  { "<leader>l", group = "LSP" },
+  -- Code group
+  { "<leader>c", group = "Code" },
+  -- Goto group
+  { "<leader>g", group = "Goto" },
+  -- Workspace group
+  { "<leader>w", group = "Workspace" },
+  -- Diagnostic group
+  { "<leader>d", group = "Diagnostics" },
+  -- Ruff group
+  { "<leader>r", group = "Ruff" },
+}
+
+-- Register LSP mappings
+wk.add {
+  -- LSP commands
+  {
+    "<leader>lh",
+    function()
+      vim.lsp.buf.hover()
+    end,
+    desc = "Hover Documentation",
+  },
+  { "<leader>ld", "<cmd>Telescope lsp_definitions<cr>",               desc = "Goto Definition" },
+  { "<leader>lr", "<cmd>Telescope lsp_references<cr>",                desc = "References" },
+  { "<leader>li", "<cmd>Telescope lsp_implementations<cr>",           desc = "Implementations" },
+  { "<leader>lt", "<cmd>Telescope lsp_type_definitions<cr>",          desc = "Type Definitions" },
+  { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>",          desc = "Document Symbols" },
+  { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace Symbols" },
+  {
+    "<leader>ln",
+    function()
+      vim.lsp.buf.rename()
+    end,
+    desc = "Rename",
+  },
+  {
+    "<leader>la",
+    function()
+      vim.lsp.buf.code_action()
+    end,
+    desc = "Code Action",
+  },
+  {
+    "<leader>lf",
+    function()
+      vim.lsp.buf.format()
+    end,
+    desc = "Format Document",
+  },
+
+  -- Code actions
+  {
+    "<leader>ca",
+    function()
+      vim.lsp.buf.code_action()
+    end,
+    desc = "Code Action",
+  },
+  {
+    "<leader>cf",
+    function()
+      vim.lsp.buf.format()
+    end,
+    desc = "Format Document",
+  },
+  {
+    "<leader>cr",
+    function()
+      vim.lsp.buf.rename()
+    end,
+    desc = "Rename",
+  },
+
+  -- Goto commands
+  { "<leader>gd", "<cmd>Telescope lsp_definitions<cr>",     desc = "Goto Definition" },
+  { "<leader>gr", "<cmd>Telescope lsp_references<cr>",      desc = "Goto References" },
+  { "<leader>gi", "<cmd>Telescope lsp_implementations<cr>", desc = "Goto Implementation" },
+  {
+    "<leader>gD",
+    function()
+      vim.lsp.buf.declaration()
+    end,
+    desc = "Goto Declaration",
+  },
+  { "<leader>gt", "<cmd>Telescope lsp_type_definitions<cr>",          desc = "Goto Type Definition" },
+
+  -- Workspace commands
+  {
+    "<leader>wa",
+    function()
+      vim.lsp.buf.add_workspace_folder()
+    end,
+    desc = "Add Workspace Folder",
+  },
+  {
+    "<leader>wr",
+    function()
+      vim.lsp.buf.remove_workspace_folder()
+    end,
+    desc = "Remove Workspace Folder",
+  },
+  {
+    "<leader>wl",
+    function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end,
+    desc = "List Workspace Folders",
+  },
+  { "<leader>ws", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace Symbols" },
+
+  -- Diagnostic commands
+  { "<leader>ds", "<cmd>Telescope lsp_document_symbols<cr>",          desc = "Document Symbols" },
+  {
+    "<leader>dd",
+    function()
+      vim.diagnostic.setloclist()
+    end,
+    desc = "List Diagnostics",
+  },
+  {
+    "<leader>df",
+    function()
+      vim.diagnostic.open_float()
+    end,
+    desc = "Show Diagnostic",
+  },
+  {
+    "<leader>dp",
+    function()
+      vim.diagnostic.goto_prev()
+    end,
+    desc = "Previous Diagnostic",
+  },
+  {
+    "<leader>dn",
+    function()
+      vim.diagnostic.goto_next()
+    end,
+    desc = "Next Diagnostic",
+  },
+
+  -- Ruff commands
+  { "<leader>ra", "<cmd>RuffAutofix<cr>",         desc = "Autofix All" },
+  { "<leader>ri", "<cmd>RuffOrganizeImports<cr>", desc = "Organize Imports" },
+}
+
 -- Set up LSP attach event for keymaps and highlighting
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
   callback = function(event)
-    local map = function(keys, func, desc)
-      vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
-    end
-
-    -- Keep all the powerful keymaps from the second config
-    map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-    map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-    map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-    map("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
-    map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
-    map("<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
-    map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
-    map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
-    map("K", vim.lsp.buf.hover, "Hover Documentation")
-    map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-    map("<leader>wa", vim.lsp.buf.add_workspace_folder, "[W]orkspace [A]dd Folder")
-    map("<leader>wr", vim.lsp.buf.remove_workspace_folder, "[W]orkspace [R]emove Folder")
-    map("<leader>wl", function()
-      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, "[W]orkspace [L]ist Folders")
+    -- Standard key mappings that will work regardless of which-key
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = event.buf, desc = "LSP: Hover Documentation" })
+    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = event.buf, desc = "LSP: Goto Declaration" })
+    vim.keymap.set("n", "gd", function()
+      require("telescope.builtin").lsp_definitions()
+    end, { buffer = event.buf, desc = "LSP: Goto Definition" })
+    vim.keymap.set("n", "gr", function()
+      require("telescope.builtin").lsp_references()
+    end, { buffer = event.buf, desc = "LSP: Goto References" })
+    vim.keymap.set("n", "gi", function()
+      require("telescope.builtin").lsp_implementations()
+    end, { buffer = event.buf, desc = "LSP: Goto Implementation" })
 
     -- Set up document highlighting
     local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -190,3 +340,4 @@ lspconfig.ruff.setup {
     },
   },
 }
+
