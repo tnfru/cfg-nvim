@@ -1,8 +1,18 @@
 require "nvchad.mappings"
 
--- add yours here
-
 local map = vim.keymap.set
+local unmap = vim.keymap.del
+
+-- Disable default NvChad window navigation mappings
+unmap("n", "<C-h>")
+unmap("n", "<C-j>")
+unmap("n", "<C-k>")
+unmap("n", "<C-l>")
+
+map("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>", { silent = true, noremap = true })
+map("n", "<C-j>", "<cmd>TmuxNavigateDown<CR>", { silent = true, noremap = true })
+map("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>", { silent = true, noremap = true })
+map("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>", { silent = true, noremap = true })
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
 
