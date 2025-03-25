@@ -2,6 +2,7 @@ require "nvchad.mappings"
 
 local map = vim.keymap.set
 local unmap = vim.keymap.del
+local wk = require "which-key"
 
 -- Disable default NvChad window navigation mappings
 unmap("n", "<C-h>")
@@ -9,6 +10,7 @@ unmap("n", "<C-j>")
 unmap("n", "<C-k>")
 unmap("n", "<C-l>")
 
+-- setup tmux / vim combined navigation
 map("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>", { silent = true, noremap = true })
 map("n", "<C-j>", "<cmd>TmuxNavigateDown<CR>", { silent = true, noremap = true })
 map("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>", { silent = true, noremap = true })
@@ -55,9 +57,13 @@ map("n", "<leader>q", vim.diagnostic.open_float)
 -- Simple save without format
 map("n", "<leader>sw", "<cmd>noautocmd w<cr>", { desc = "Save without formatting" })
 
--- Register with which-key
-local wk = require "which-key"
 wk.add {
   { "<leader>s",  group = "Save" },
   { "<leader>sw", "<cmd>noautocmd w<cr>", desc = "Save without formatting" },
+
+  { "<leader>t",  group = "Tabs" },
+  { "<leader>to", ":tabnew<CR>",          desc = "Open New Tab" },
+  { "<leader>tx", ":tabclose<CR>",        desc = "Close Tab" },
+  { "<leader>tn", ":tabn<CR>",            desc = "Next Tab" },
+  { "<leader>tp", ":tabp<CR>",            desc = "Previous Tab" },
 }
