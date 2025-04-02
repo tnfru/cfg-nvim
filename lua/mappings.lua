@@ -67,3 +67,19 @@ wk.add {
   { "<leader>tn", ":tabn<CR>",            desc = "Next Tab" },
   { "<leader>tp", ":tabp<CR>",            desc = "Previous Tab" },
 }
+
+-- Register Avante group
+wk.add {
+  -- Avante group
+  { "<leader>a", group = "Avante" },
+}
+
+-- Register Avante mappings
+wk.add {
+  { "<leader>at", "<cmd>AvanteToggle<cr>", desc = "Toggle Avante" },
+  { "<leader>aa", "<cmd>AvanteAsk<cr>",    desc = "Ask AI" },
+  { "<leader>ac", "<cmd>AvanteChat<cr>",   desc = "Chat with AI" },
+  { "<leader>af", "<cmd>AvanteFocus<cr>",  desc = "Focus Avante" },
+  { "<leader>as", "<cmd>AvanteStop<cr>",   desc = "Stop Generation" },
+  { "<leader>ax", "<cmd>AvanteClear<cr>",  desc = "Clear Chat History" },
+}
