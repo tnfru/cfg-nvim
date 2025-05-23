@@ -7,7 +7,7 @@ local M = {}
 local config = {
   -- Set to `true` for diagnostics to be ON when you open a file.
   -- Set to `false` for diagnostics to be OFF when you open a file.
-  diagnostics_on_by_default = true,
+  diagnostics_on_by_default = false,
 }
 -- =========================================================================
 
