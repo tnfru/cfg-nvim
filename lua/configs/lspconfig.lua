@@ -196,6 +196,13 @@ wk.add {
     end,
     desc = "Next Diagnostic",
   },
+  {
+    "<leader>dx",
+    function()
+      require("configs.custom_utils").toggle_diagnostics()
+    end,
+    desc = "Toggle Diagnostics",
+  },
 
   -- Ruff commands
   { "<leader>ra", "<cmd>RuffAutofix<cr>",         desc = "Autofix All" },
@@ -340,4 +347,3 @@ lspconfig.ruff.setup {
     },
   },
 }
-
