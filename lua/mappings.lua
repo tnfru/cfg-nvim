@@ -33,10 +33,6 @@ map("n", "<C-d>", "<C-d>zz")
 map("n", "<C-u>", "<C-u>zz")
 
 -- resize buffer
-map("n", "<Up>", ":resize -2<CR>")
-map("n", "<Down>", ":resize +2<CR>")
-map("n", "<Left>", ":vertical resize -2<CR>")
-map("n", "<Right>", ":vertical resize +2<CR>")
 map("n", "<leader>se", "<C-w>=")
 map("n", "<leader>v", "<C-w>v", { noremap = true })
 
