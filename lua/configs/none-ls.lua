@@ -1,14 +1,18 @@
-local null_ls = require "null-ls"
+local null_ls = require("null-ls")
+local python_utils = require("configs.python_utils")
+
+-- Try to find Python in virtual environment
+local python_path = python_utils.find_venv_python()
 
 -- Set up mason integration for none-ls
-require("mason-null-ls").setup {
+require('mason-null-ls').setup {
   ensure_installed = {
-    "checkmake",
-    "prettier",
-    "stylua",
-    "eslint_d",
-    "shfmt",
-    "ruff",
+    'checkmake',
+    'prettier',
+    'stylua',
+    'eslint_d',
+    'shfmt',
+    'ruff',
   },
   automatic_installation = true,
 }
@@ -20,16 +24,16 @@ local diagnostics = null_ls.builtins.diagnostics
 local sources = {
   -- From your provided config
   diagnostics.checkmake,
-  formatting.prettier.with { filetypes = { "html", "json", "yaml", "markdown" } },
+  formatting.prettier.with { filetypes = { 'html', 'json', 'yaml', 'markdown' } },
   formatting.stylua,
-  formatting.shfmt.with { args = { "-i", "4" } },
+  formatting.shfmt.with { args = { '-i', '4' } },
   formatting.terraform_fmt,
-  require("none-ls.formatting.ruff").with { extra_args = { "--extend-select", "I" } },
-  require "none-ls.formatting.ruff_format",
+  require('none-ls.formatting.ruff').with { extra_args = { '--extend-select', 'I' } },
+  require('none-ls.formatting.ruff_format'),
 }
 
 -- Set up format on save
-local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+local augroup = vim.api.nvim_create_augroup('LspFormatting', {})
 
 -- Initialize null-ls
 null_ls.setup {
@@ -37,17 +41,17 @@ null_ls.setup {
   sources = sources,
   on_attach = function(client, bufnr)
     -- Use nvchad's on_attach for consistent behavior
-    local lspconfig = require "nvchad.configs.lspconfig"
+    local lspconfig = require("nvchad.configs.lspconfig")
     lspconfig.on_attach(client, bufnr)
-
+    
     -- Set up format on save
-    if client.supports_method "textDocument/formatting" then
-      vim.api.nvim_clear_autocmds { group = augroup, buffer = bufnr }
-      vim.api.nvim_create_autocmd("BufWritePre", {
+    if client.supports_method('textDocument/formatting') then
+      vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+      vim.api.nvim_create_autocmd('BufWritePre', {
         group = augroup,
         buffer = bufnr,
         callback = function()
-          vim.lsp.buf.format { async = false }
+          vim.lsp.buf.format({ async = false })
         end,
       })
     end
