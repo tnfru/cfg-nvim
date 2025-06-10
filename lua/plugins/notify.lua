@@ -1,10 +1,18 @@
 -- lua/plugins/notify.lua
 return {
   "rcarriga/nvim-notify",
-  -- This is the missing line. It tells lazy.nvim to load this plugin
-  -- as soon as startup is complete and the UI is ready.
   event = "VeryLazy",
   config = function()
-    vim.notify = require "notify"
+    local notify = require "notify"
+
+    notify.setup {
+      -- This provides a default background color for the notification windows,
+      -- resolving the error caused by a transparent 'NormalFloat' highlight.
+      -- We're using the base background of your 'onenord' theme for consistency.
+      background_colour = "#2D3540",
+    }
+
+    -- This makes the notify function available globally
+    vim.notify = notify
   end,
 }
