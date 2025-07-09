@@ -1,4 +1,4 @@
-local null_ls = require "null-ls"
+local none_ls = require "null-ls"
 
 -- Set up mason integration for none-ls
 require("mason-null-ls").setup {
@@ -13,9 +13,9 @@ require("mason-null-ls").setup {
   automatic_installation = true,
 }
 
--- Define sources for null-ls
-local formatting = null_ls.builtins.formatting
-local diagnostics = null_ls.builtins.diagnostics
+-- Define sources for none-ls
+local formatting = none_ls.builtins.formatting
+local diagnostics = none_ls.builtins.diagnostics
 
 local sources = {
   -- From your provided config
@@ -31,8 +31,8 @@ local sources = {
 -- Set up format on save
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
--- Initialize null-ls
-null_ls.setup {
+-- Initialize none-ls
+none_ls.setup {
   -- debug = true, -- Enable for troubleshooting
   sources = sources,
   on_attach = function(client, bufnr)
