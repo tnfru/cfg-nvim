@@ -34,14 +34,6 @@ dofile(vim.g.base46_cache .. "statusline")
 require "options"
 require "nvchad.autocmds"
 
--- diagnostics
-local custom_utils = require "configs.custom_utils"
-vim.api.nvim_create_autocmd("LspAttach", {
-  group = vim.api.nvim_create_augroup("user-diagnostics-off-on-attach", { clear = true }),
-  -- UPDATED: Use the new, more descriptive function name
-  callback = custom_utils.set_initial_diagnostic_state,
-})
-
 -- mappings
 vim.schedule(function()
   require "mappings"
