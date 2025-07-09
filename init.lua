@@ -45,4 +45,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- mappings
 vim.schedule(function()
   require "mappings"
+  -- Apply diagnostic config after everything is loaded
+  require "configs.diagnostic_config"
 end)
