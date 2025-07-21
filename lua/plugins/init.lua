@@ -1,11 +1,11 @@
--- Add to your plugins/init.lua
+-- lua/plugins/init.lua
 return {
   -- Existing plugins
   {
     "stevearc/conform.nvim",
     opts = require "configs.conform",
   },
-  
+
   -- LSP configuration with Mason integration
   {
     "neovim/nvim-lspconfig",
@@ -14,20 +14,30 @@ return {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
       "WhoIsSethDaniel/mason-tool-installer.nvim",
-      
+
       -- Completion capabilities for LSP
       "hrsh7th/cmp-nvim-lsp",
-      
+
       -- LSP status updates
       {
         "j-hui/fidget.nvim",
         tag = "v1.4.0",
       },
-      
+
       -- Telescope for LSP navigation features
       "nvim-telescope/telescope.nvim",
     },
     config = function()
+      -- Set your global diagnostic config HERE, before anything else.
+      vim.diagnostic.config {
+        virtual_text = false,
+        signs = true,
+        underline = true,
+        update_in_insert = false,
+        severity_sort = true,
+      }
+
+      -- Now, load the rest of your LSP config
       require "configs.lspconfig"
     end,
   },
@@ -51,9 +61,15 @@ return {
     "nvim-treesitter/nvim-treesitter",
     opts = {
       ensure_installed = {
-        "vim", "lua", "vimdoc",
-        "html", "css", "bash",
-        "python", "json", "yaml",
+        "vim",
+        "lua",
+        "vimdoc",
+        "html",
+        "css",
+        "bash",
+        "python",
+        "json",
+        "yaml",
       },
     },
   },
