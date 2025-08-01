@@ -66,7 +66,7 @@ for _, server_name in ipairs(servers) do
       },
       python = {
         -- Your plugin's variable is used here!
-        pythonPath = vim.g.python3_host_prog,
+        pythonPath = vim.g.venv_detector_python_path,
       },
     }
   end
@@ -80,7 +80,7 @@ for _, server_name in ipairs(servers) do
     opts.settings = {
       python = {
         -- Your plugin's variable is used here!
-        pythonPath = vim.g.python3_host_prog,
+        pythonPath = vim.g.venv_detector_python_path,
       },
     }
   end
