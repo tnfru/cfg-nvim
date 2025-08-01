@@ -42,9 +42,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
   callback = custom_utils.set_initial_diagnostic_state,
 })
 
+-- Apply diagnostic config immediately to override NvChad defaults
+require "configs.diagnostic_config"
+
 -- mappings
 vim.schedule(function()
   require "mappings"
-  -- Apply diagnostic config after everything is loaded
-  require "configs.diagnostic_config"
 end)
