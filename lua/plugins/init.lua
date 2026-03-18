@@ -113,6 +113,13 @@ return {
     },
   },
 
+  -- Surround: ys/cs/ds to add/change/delete surrounding chars
+  {
+    "kylechui/nvim-surround",
+    event = "VeryLazy",
+    opts = {},
+  },
+
   -- Treesitter configuration
   {
     "nvim-treesitter/nvim-treesitter",

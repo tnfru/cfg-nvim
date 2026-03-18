@@ -37,7 +37,7 @@ map("n", "<Up>", ":resize -2<CR>")
 map("n", "<Down>", ":resize +2<CR>")
 map("n", "<Left>", ":vertical resize -2<CR>")
 map("n", "<Right>", ":vertical resize +2<CR>")
-map("n", "<leader>se", "<C-w>=")
+map("n", "<leader>=", "<C-w>=", { desc = "Equalize splits" })
 map("n", "<leader>v", "<C-w>v", { noremap = true })
 
 -- tabs
@@ -87,9 +87,18 @@ end)
 -- Simple save without format
 map("n", "<leader>sw", "<cmd>noautocmd w<cr>", { desc = "Save without formatting" })
 
+-- surround shortcuts
+map("n", "<leader>sa", "ysiw", { remap = true, desc = "Surround word" })
+map("v", "<leader>sa", "S", { remap = true, desc = "Surround selection" })
+map("n", "<leader>sd", "ds", { remap = true, desc = "Delete surround" })
+map("n", "<leader>sc", "cs", { remap = true, desc = "Change surround" })
+
 wk.add {
-  { "<leader>s",  group = "Save" },
+  { "<leader>s",  group = "Save/Surround" },
   { "<leader>sw", "<cmd>noautocmd w<cr>", desc = "Save without formatting" },
+  { "<leader>sa", desc = "Add surround", mode = { "n", "v" } },
+  { "<leader>sd", desc = "Delete surround" },
+  { "<leader>sc", desc = "Change surround" },
 
   { "<leader>t",  group = "Tabs" },
   { "<leader>to", ":tabnew<CR>",          desc = "Open New Tab" },
