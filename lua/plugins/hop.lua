@@ -1,6 +1,6 @@
 return {
   "smoka7/hop.nvim",
-  lazy = false,
+  keys = { "<leader>j", "f", "F" },
   config = function()
     local hop = require("hop")
     local directions = require("hop.hint").HintDirection
@@ -32,12 +32,12 @@ return {
     
     -- Basic f/t replacements (optional)
     vim.keymap.set("n", "f", function()
-      hop.hint_char1({ direction = directions.AFTER_CURSOR })
-    end, { remap = true, desc = "Hop forward to char" })
-    
+      hop.hint_words()
+    end, { remap = true, desc = "Hop to word" })
+
     vim.keymap.set("n", "F", function()
-      hop.hint_char1({ direction = directions.BEFORE_CURSOR })
-    end, { remap = true, desc = "Hop backward to char" })
+      hop.hint_char1()
+    end, { remap = true, desc = "Hop to char" })
   end,
   dependencies = {
     "folke/which-key.nvim",

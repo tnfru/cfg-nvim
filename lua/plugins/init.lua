@@ -98,6 +98,7 @@ return {
         "python",
         "json",
         "yaml",
+        "toml",
       },
     },
   },

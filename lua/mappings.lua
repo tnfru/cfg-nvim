@@ -51,7 +51,6 @@ map("v", "<", "<gv")
 map("v", ">", ">gv")
 
 -- diagnostic
-map("n", "<leader>d", vim.diagnostic.setloclist)
 map("n", "<leader>q", function()
   local cursor = vim.api.nvim_win_get_cursor(0)
   local diagnostics = vim.diagnostic.get(0, { lnum = cursor[1] - 1 })
