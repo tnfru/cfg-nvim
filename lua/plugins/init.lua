@@ -28,17 +28,36 @@ return {
       "nvim-telescope/telescope.nvim",
     },
     config = function()
-      -- Set your global diagnostic config HERE, before anything else.
+      -- Load LSP config first (includes NvChad defaults)
+      require "configs.lspconfig"
+
+      -- Apply diagnostic config AFTER NvChad defaults so we override them
       vim.diagnostic.config {
         virtual_text = false,
-        signs = true,
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = "󰅙",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.INFO] = "󰋼",
+            [vim.diagnostic.severity.HINT] = "󰌵",
+          },
+        },
         underline = true,
         update_in_insert = false,
         severity_sort = true,
+        float = {
+          border = "single",
+          suffix = function(diag)
+            if diag.code and diag.source and diag.source:lower():find("ruff") then
+              return " " .. diag.code .. " https://docs.astral.sh/ruff/rules/" .. diag.code .. " ", "DiagnosticUnnecessary"
+            end
+            if diag.code then
+              return " [" .. diag.code .. "]", "DiagnosticUnnecessary"
+            end
+            return "", ""
+          end,
+        },
       }
-
-      -- Now, load the rest of your LSP config
-      require "configs.lspconfig"
     end,
   },
 
@@ -54,6 +73,15 @@ return {
     config = function()
       require "configs.none-ls"
     end,
+  },
+
+  -- Pretty UI for vim.ui.input/select (NvimTree create, LSP rename, etc.)
+  {
+    "stevearc/dressing.nvim",
+    event = "VeryLazy",
+    opts = {
+      input = { relative = "cursor" },
+    },
   },
 
   -- Treesitter configuration

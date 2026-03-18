@@ -52,7 +52,31 @@ map("v", ">", ">gv")
 
 -- diagnostic
 map("n", "<leader>d", vim.diagnostic.setloclist)
-map("n", "<leader>q", vim.diagnostic.open_float)
+map("n", "<leader>q", function()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local diagnostics = vim.diagnostic.get(0, { lnum = cursor[1] - 1 })
+
+  local float_bufnr, float_winnr = vim.diagnostic.open_float({ focusable = true })
+  if not float_bufnr then return end
+
+  vim.api.nvim_set_current_win(float_winnr)
+
+  local function close()
+    pcall(vim.api.nvim_win_close, float_winnr, true)
+  end
+
+  vim.keymap.set("n", "q", close, { buffer = float_bufnr, silent = true })
+  vim.keymap.set("n", "<Esc>", close, { buffer = float_bufnr, silent = true })
+
+  for i, diag in ipairs(diagnostics) do
+    if diag.code and diag.source and diag.source:lower():find("ruff") then
+      vim.keymap.set("n", tostring(i), function()
+        vim.ui.open("https://docs.astral.sh/ruff/rules/" .. diag.code)
+        close()
+      end, { buffer = float_bufnr, silent = true })
+    end
+  end
+end)
 
 -- Simple save without format
 map("n", "<leader>sw", "<cmd>noautocmd w<cr>", { desc = "Save without formatting" })

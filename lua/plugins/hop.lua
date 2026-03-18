@@ -12,22 +12,10 @@ return {
       multi_windows = true,
     })
     
-    -- Set up key mappings directly with descriptive labels
+    -- Set up key mappings
     local wk = require("which-key")
-    
-    -- Register the group prefix for which-key
-    -- The format is different for .add() - it expects direct mappings
-    wk.add({
-      mode = "n",
-      prefix = "<leader>j",
-      buffer = nil,
-      silent = true,
-      noremap = true,
-      nowait = false,
-    }, {
-      name = "+Jump/Hop"
-    })
-    
+    wk.add({ { "<leader>j", group = "Jump/Hop" } })
+
     -- Register individual mappings
     vim.keymap.set("n", "<leader>jw", function() hop.hint_words() end, { desc = "Hop to Word" })
     vim.keymap.set("n", "<leader>jl", function() hop.hint_lines() end, { desc = "Hop to Line" })
