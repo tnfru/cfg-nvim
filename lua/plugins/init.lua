@@ -75,6 +75,15 @@ return {
     end,
   },
 
+  -- Pretty UI for vim.ui.input/select (NvimTree create, LSP rename, etc.)
+  {
+    "stevearc/dressing.nvim",
+    event = "VeryLazy",
+    opts = {
+      input = { relative = "cursor" },
+    },
+  },
+
   -- Treesitter configuration
   {
     "nvim-treesitter/nvim-treesitter",
