@@ -28,8 +28,10 @@ return {
       "nvim-telescope/telescope.nvim",
     },
     config = function()
-      -- Consolidated diagnostic config: signs in gutter, no inline text,
-      -- use <leader>q / <leader>df to see details in a float.
+      -- Load LSP config first (includes NvChad defaults)
+      require "configs.lspconfig"
+
+      -- Apply diagnostic config AFTER NvChad defaults so we override them
       vim.diagnostic.config {
         virtual_text = false,
         signs = {
@@ -43,11 +45,19 @@ return {
         underline = true,
         update_in_insert = false,
         severity_sort = true,
-        float = { border = "single" },
+        float = {
+          border = "single",
+          suffix = function(diag)
+            if diag.code and diag.source and diag.source:lower():find("ruff") then
+              return " " .. diag.code .. " https://docs.astral.sh/ruff/rules/" .. diag.code .. " ", "DiagnosticUnnecessary"
+            end
+            if diag.code then
+              return " [" .. diag.code .. "]", "DiagnosticUnnecessary"
+            end
+            return "", ""
+          end,
+        },
       }
-
-      -- Load the rest of the LSP config
-      require "configs.lspconfig"
     end,
   },
 
