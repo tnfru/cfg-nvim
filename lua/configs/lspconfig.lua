@@ -99,8 +99,6 @@ require("fidget").setup {
 }
 
 local wk = require "which-key"
-wk.setup { triggers_nowait = {} }
-
 -- Register groups
 wk.add {
   { "<leader>l", group = "LSP" },
@@ -227,14 +225,14 @@ wk.add {
   {
     "<leader>dp",
     function()
-      vim.diagnostic.goto_prev()
+      vim.diagnostic.jump({ count = -1 })
     end,
     desc = "Previous Diagnostic",
   },
   {
     "<leader>dn",
     function()
-      vim.diagnostic.goto_next()
+      vim.diagnostic.jump({ count = 1 })
     end,
     desc = "Next Diagnostic",
   },

@@ -28,16 +28,25 @@ return {
       "nvim-telescope/telescope.nvim",
     },
     config = function()
-      -- Set your global diagnostic config HERE, before anything else.
+      -- Consolidated diagnostic config: signs in gutter, no inline text,
+      -- use <leader>q / <leader>df to see details in a float.
       vim.diagnostic.config {
         virtual_text = false,
-        signs = true,
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = "󰅙",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.INFO] = "󰋼",
+            [vim.diagnostic.severity.HINT] = "󰌵",
+          },
+        },
         underline = true,
         update_in_insert = false,
         severity_sort = true,
+        float = { border = "single" },
       }
 
-      -- Now, load the rest of your LSP config
+      -- Load the rest of the LSP config
       require "configs.lspconfig"
     end,
   },
