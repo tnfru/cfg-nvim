@@ -31,13 +31,14 @@ return {
       -- Load LSP config first (includes NvChad defaults)
       require "configs.lspconfig"
 
-      -- Apply diagnostic config AFTER NvChad defaults so we override them
-      vim.diagnostic.config {
+      -- Apply diagnostic config AFTER NvChad defaults so we override them.
+      -- Also re-apply on LspAttach since NvChad may override during async attach.
+      local diag_config = {
         virtual_text = false,
         signs = {
           text = {
             [vim.diagnostic.severity.ERROR] = "󰅙",
-            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.WARN] = "",
             [vim.diagnostic.severity.INFO] = "󰋼",
             [vim.diagnostic.severity.HINT] = "󰌵",
           },
@@ -48,8 +49,11 @@ return {
         float = {
           border = "single",
           suffix = function(diag)
-            if diag.code and diag.source and diag.source:lower():find("ruff") then
-              return " " .. diag.code .. " https://docs.astral.sh/ruff/rules/" .. diag.code .. " ", "DiagnosticUnnecessary"
+            if diag.code and diag.source then
+              local source = diag.source:lower()
+              if source:find("ruff") then
+                return " " .. diag.code .. " https://docs.astral.sh/ruff/rules/" .. diag.code .. " ", "DiagnosticUnnecessary"
+              end
             end
             if diag.code then
               return " [" .. diag.code .. "]", "DiagnosticUnnecessary"
@@ -58,6 +62,15 @@ return {
           end,
         },
       }
+
+      vim.diagnostic.config(diag_config)
+
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("user-diagnostic-config", { clear = true }),
+        callback = function()
+          vim.diagnostic.config(diag_config)
+        end,
+      })
     end,
   },
 
@@ -81,6 +94,22 @@ return {
     event = "VeryLazy",
     opts = {
       input = { relative = "cursor" },
+    },
+  },
+
+  -- Telescope ignore patterns
+  {
+    "nvim-telescope/telescope.nvim",
+    opts = {
+      defaults = {
+        file_ignore_patterns = {
+          "%.git/",
+          "__pycache__/",
+          "%.venv/",
+          "node_modules/",
+          "%.pyc$",
+        },
+      },
     },
   },
 

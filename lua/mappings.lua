@@ -68,11 +68,18 @@ map("n", "<leader>q", function()
   vim.keymap.set("n", "<Esc>", close, { buffer = float_bufnr, silent = true })
 
   for i, diag in ipairs(diagnostics) do
-    if diag.code and diag.source and diag.source:lower():find("ruff") then
-      vim.keymap.set("n", tostring(i), function()
-        vim.ui.open("https://docs.astral.sh/ruff/rules/" .. diag.code)
-        close()
-      end, { buffer = float_bufnr, silent = true })
+    if diag.code and diag.source then
+      local source = diag.source:lower()
+      local url
+      if source:find("ruff") then
+        url = "https://docs.astral.sh/ruff/rules/" .. diag.code
+      end
+      if url then
+        vim.keymap.set("n", tostring(i), function()
+          vim.ui.open(url)
+          close()
+        end, { buffer = float_bufnr, silent = true })
+      end
     end
   end
 end)
