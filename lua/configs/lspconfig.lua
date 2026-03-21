@@ -27,35 +27,10 @@ vim.lsp.config("lua_ls", {
   },
 })
 
-vim.lsp.config("basedpyright", {
-  settings = {
-    basedpyright = {
-      analysis = {
-        autoImportCompletions = true,
-        autoSearchPaths = true,
-        diagnosticMode = "workspace",
-        useLibraryCodeForTypes = true,
-        typeCheckingMode = "strict",
-        diagnosticSeverityOverrides = {
-          reportUnknownMemberType = "warning",
-          reportUnknownVariableType = "warning",
-          reportUnknownArgumentType = "warning",
-          reportUnknownParameterType = "warning",
-          reportMissingParameterType = "warning",
-          reportMissingTypeStubs = "warning",
-        },
-      },
-    },
-    python = {
-      pythonPath = vim.g.venv_detector_python_path,
-    },
-  },
-})
-
 vim.lsp.config("ruff", {
   on_attach = function(client, bufnr)
     nvlsp.on_attach(client, bufnr)
-    -- Disable ruff's hover provider in favor of basedpyright
+    -- Disable ruff's hover provider in favor of ty
     client.server_capabilities.hoverProvider = false
   end,
   settings = {
@@ -66,7 +41,7 @@ vim.lsp.config("ruff", {
 })
 
 -- Simple servers with no custom config
-vim.lsp.enable { "basedpyright", "ruff", "html", "cssls", "bashls", "jsonls" }
+vim.lsp.enable { "ty", "ruff", "html", "cssls", "bashls", "jsonls" }
 
 -- All keymappings and autocommands below can stay exactly the same.
 -- Their setup is independent of how the LSP servers are configured.

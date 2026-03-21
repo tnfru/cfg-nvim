@@ -54,6 +54,9 @@ return {
               if source:find("ruff") then
                 return " " .. diag.code .. " https://docs.astral.sh/ruff/rules/" .. diag.code .. " ", "DiagnosticUnnecessary"
               end
+              if source:find("ty") then
+                return " " .. diag.code .. " https://docs.astral.sh/ty/reference/rules/#" .. diag.code .. " ", "DiagnosticUnnecessary"
+              end
             end
             if diag.code then
               return " [" .. diag.code .. "]", "DiagnosticUnnecessary"

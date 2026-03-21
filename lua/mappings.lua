@@ -73,6 +73,8 @@ map("n", "<leader>q", function()
       local url
       if source:find("ruff") then
         url = "https://docs.astral.sh/ruff/rules/" .. diag.code
+      elseif source:find("ty") then
+        url = "https://docs.astral.sh/ty/reference/rules/#" .. diag.code
       end
       if url then
         vim.keymap.set("n", tostring(i), function()
