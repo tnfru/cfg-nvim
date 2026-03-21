@@ -1,93 +1,72 @@
 -- lua/configs/lspconfig.lua
 
--- Load base NvChad defaults
+-- Load base NvChad defaults (sets up "*" config and lua_ls)
 require("nvchad.configs.lspconfig").defaults()
 
-local lspconfig = require "lspconfig"
 local nvlsp = require "nvchad.configs.lspconfig"
 
--- Set up common LSP capabilities
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
+-- Merge cmp capabilities into the global wildcard config
+local cmp_capabilities = require("cmp_nvim_lsp").default_capabilities()
+vim.lsp.config("*", {
+  capabilities = vim.tbl_deep_extend("force", nvlsp.capabilities, cmp_capabilities),
+})
 
-local servers = {
-  "lua_ls",
-  "basedpyright",
-  "ruff",
-  "html",
-  "cssls",
-  "bashls",
-  "jsonls",
-}
-
-for _, server_name in ipairs(servers) do
-  -- Default options for all servers
-  local opts = {
-    on_attach = nvlsp.on_attach,
-    on_init = nvlsp.on_init,
-    capabilities = capabilities,
-  }
-
-  -- Add custom settings for specific servers
-  if server_name == "lua_ls" then
-    opts.settings = {
-      Lua = {
-        runtime = { version = "LuaJIT" },
-        workspace = {
-          checkThirdParty = false,
-          library = { "${3rd}/luv/library", vim.api.nvim_get_runtime_file("", true) },
-        },
-        completion = { callSnippet = "Replace" },
-        telemetry = { enable = false },
-        diagnostics = { disable = { "missing-fields" } },
+-- Override lua_ls with our own settings (NvChad already enables it)
+vim.lsp.config("lua_ls", {
+  settings = {
+    Lua = {
+      runtime = { version = "LuaJIT" },
+      workspace = {
+        checkThirdParty = false,
+        library = { "${3rd}/luv/library", vim.api.nvim_get_runtime_file("", true) },
       },
-    }
-  end
+      completion = { callSnippet = "Replace" },
+      telemetry = { enable = false },
+      diagnostics = { disable = { "missing-fields" } },
+    },
+  },
+})
 
-  if server_name == "basedpyright" then
-    opts.settings = {
-      basedpyright = {
-        analysis = {
-          autoImportCompletions = true,
-          autoSearchPaths = true,
-          diagnosticMode = "workspace",
-          useLibraryCodeForTypes = true,
-          typeCheckingMode = "strict",
-          diagnosticSeverityOverrides = {
-            reportUnknownMemberType = "warning",
-            reportUnknownVariableType = "warning",
-            reportUnknownArgumentType = "warning",
-            reportUnknownParameterType = "warning",
-            reportMissingParameterType = "warning",
-            reportMissingTypeStubs = "warning",
-            -- Add any other "strict" rules you want as warnings here.
-          },
+vim.lsp.config("basedpyright", {
+  settings = {
+    basedpyright = {
+      analysis = {
+        autoImportCompletions = true,
+        autoSearchPaths = true,
+        diagnosticMode = "workspace",
+        useLibraryCodeForTypes = true,
+        typeCheckingMode = "strict",
+        diagnosticSeverityOverrides = {
+          reportUnknownMemberType = "warning",
+          reportUnknownVariableType = "warning",
+          reportUnknownArgumentType = "warning",
+          reportUnknownParameterType = "warning",
+          reportMissingParameterType = "warning",
+          reportMissingTypeStubs = "warning",
         },
       },
-      python = {
-        -- Your plugin's variable is used here!
-        pythonPath = vim.g.venv_detector_python_path,
-      },
-    }
-  end
+    },
+    python = {
+      pythonPath = vim.g.venv_detector_python_path,
+    },
+  },
+})
 
-  if server_name == "ruff" then
+vim.lsp.config("ruff", {
+  on_attach = function(client, bufnr)
+    nvlsp.on_attach(client, bufnr)
     -- Disable ruff's hover provider in favor of basedpyright
-    opts.on_attach = function(client, bufnr)
-      nvlsp.on_attach(client, bufnr)
-      client.server_capabilities.hoverProvider = false
-    end
-    opts.settings = {
-      python = {
-        -- Your plugin's variable is used here!
-        pythonPath = vim.g.venv_detector_python_path,
-      },
-    }
-  end
+    client.server_capabilities.hoverProvider = false
+  end,
+  settings = {
+    python = {
+      pythonPath = vim.g.venv_detector_python_path,
+    },
+  },
+})
 
-  -- Finally, set up the server with the calculated options
-  lspconfig[server_name].setup(opts)
-end
+-- Simple servers with no custom config
+vim.lsp.enable { "basedpyright", "ruff", "html", "cssls", "bashls", "jsonls" }
 
 -- All keymappings and autocommands below can stay exactly the same.
 -- Their setup is independent of how the LSP servers are configured.
