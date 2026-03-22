@@ -3,6 +3,21 @@
 -- Load base NvChad defaults (sets up "*" config and lua_ls)
 require("nvchad.configs.lspconfig").defaults()
 
+-- Ensure LSP servers are installed via Mason
+require("mason").setup()
+require("mason-lspconfig").setup {
+  ensure_installed = {
+    "jedi_language_server",
+    "ty",
+    "ruff",
+    "html",
+    "cssls",
+    "bashls",
+    "jsonls",
+    "lua_ls",
+  },
+}
+
 local nvlsp = require "nvchad.configs.lspconfig"
 
 -- Merge cmp capabilities into the global wildcard config
@@ -27,6 +42,14 @@ vim.lsp.config("lua_ls", {
   },
 })
 
+vim.lsp.config("jedi_language_server", {
+  settings = {
+    jedi = {
+      pythonPath = vim.g.venv_detector_python_path,
+    },
+  },
+})
+
 vim.lsp.config("ruff", {
   on_attach = function(client, bufnr)
     nvlsp.on_attach(client, bufnr)
@@ -41,7 +64,7 @@ vim.lsp.config("ruff", {
 })
 
 -- Simple servers with no custom config
-vim.lsp.enable { "ty", "ruff", "html", "cssls", "bashls", "jsonls" }
+vim.lsp.enable { "ty", "ruff", "jedi_language_server", "html", "cssls", "bashls", "jsonls" }
 
 -- All keymappings and autocommands below can stay exactly the same.
 -- Their setup is independent of how the LSP servers are configured.
