@@ -51,11 +51,6 @@ vim.lsp.config("jedi_language_server", {
 })
 
 vim.lsp.config("ruff", {
-  on_attach = function(client, bufnr)
-    nvlsp.on_attach(client, bufnr)
-    -- Disable ruff's hover provider in favor of ty
-    client.server_capabilities.hoverProvider = false
-  end,
   settings = {
     python = {
       pythonPath = vim.g.venv_detector_python_path,
@@ -239,6 +234,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
       require("telescope.builtin").lsp_implementations()
     end, { buffer = event.buf, desc = "LSP: Goto Implementation" })
     local client = vim.lsp.get_client_by_id(event.data.client_id)
+    if client then
+      if client.name == "ty" then
+        -- Disable ty's definition provider in favor of jedi
+        client.server_capabilities.definitionProvider = false
+      elseif client.name == "ruff" then
+        -- Disable ruff's hover provider in favor of ty
+        client.server_capabilities.hoverProvider = false
+      end
+    end
     if client and client.server_capabilities.documentHighlightProvider then
       vim.api.nvim_create_autocmd(
         { "CursorHold", "CursorHoldI" },
