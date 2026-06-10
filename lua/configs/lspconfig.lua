@@ -18,6 +18,11 @@ require("mason-lspconfig").setup {
   },
 }
 
+-- Ensure conform's formatter CLIs are installed (none-ls no longer installs them)
+require("mason-tool-installer").setup {
+  ensure_installed = { "stylua", "prettier", "shfmt" },
+}
+
 local nvlsp = require "nvchad.configs.lspconfig"
 
 -- Merge cmp capabilities into the global wildcard config
@@ -113,7 +118,7 @@ wk.add {
   {
     "<leader>lf",
     function()
-      vim.lsp.buf.format()
+      require("conform").format { lsp_format = "fallback" }
     end,
     desc = "Format Document",
   },
@@ -127,7 +132,7 @@ wk.add {
   {
     "<leader>cf",
     function()
-      vim.lsp.buf.format()
+      require("conform").format { lsp_format = "fallback" }
     end,
     desc = "Format Document",
   },
@@ -215,8 +220,6 @@ wk.add {
     end,
     desc = "Toggle Diagnostics",
   },
-  { "<leader>ra", "<cmd>RuffAutofix<cr>",         desc = "Autofix All" },
-  { "<leader>ri", "<cmd>RuffOrganizeImports<cr>", desc = "Organize Imports" },
 }
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -243,6 +246,20 @@ vim.api.nvim_create_autocmd("LspAttach", {
         client.server_capabilities.hoverProvider = false
       end
     end
+
+    -- Ruff: autofix / organize imports via code actions. The old Ruff* user
+    -- commands don't exist under vim.lsp.enable. Set buffer-local so they
+    -- override NvChad on_attach's <leader>ra=rename in Python buffers, and
+    -- re-assert on every attach so a later jedi/ty attach can't clobber them.
+    if vim.lsp.get_clients({ bufnr = event.buf, name = "ruff" })[1] then
+      vim.keymap.set("n", "<leader>ra", function()
+        vim.lsp.buf.code_action { context = { only = { "source.fixAll.ruff" }, diagnostics = {} }, apply = true }
+      end, { buffer = event.buf, desc = "Ruff: Autofix All" })
+      vim.keymap.set("n", "<leader>ri", function()
+        vim.lsp.buf.code_action { context = { only = { "source.organizeImports.ruff" }, diagnostics = {} }, apply = true }
+      end, { buffer = event.buf, desc = "Ruff: Organize Imports" })
+    end
+
     if client and client.server_capabilities.documentHighlightProvider then
       vim.api.nvim_create_autocmd(
         { "CursorHold", "CursorHoldI" },
