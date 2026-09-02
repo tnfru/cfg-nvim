@@ -6,6 +6,10 @@ require("nvchad.configs.lspconfig").defaults()
 -- Ensure LSP servers are installed via Mason
 require("mason").setup()
 require("mason-lspconfig").setup {
+  -- Only servers listed in vim.lsp.enable below may attach. The default
+  -- auto-enables every Mason-installed server (e.g. a leftover basedpyright),
+  -- which yields duplicate goto-definition results next to jedi.
+  automatic_enable = false,
   ensure_installed = {
     "jedi_language_server",
     "ty",
